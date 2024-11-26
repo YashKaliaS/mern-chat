@@ -110,6 +110,10 @@ export default function Login() {
     formData.append("password", password);
     setLoading(true);
     try {
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+    }
+      console.log("ENdpoint is:"+`${ENDPOINT}/user/register`)
       const response = await axios.post(`${ENDPOINT}/user/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",

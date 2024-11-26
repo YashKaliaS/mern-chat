@@ -4,11 +4,15 @@ const handler = require("express-async-handler");
 const generateToken = require("../Config/generateToken");
 
 const loginController = handler(async (req, res) => {
+
   const { name, password } = req.body;
+  console.log("Hi")
+  console.log(name +"and"+password)
   const user = await userModel.findOne({ name });
   if (user && (await user.matchPassword(password))) {
 
     const imageBase64 = user.image ? user.image.toString('base64') : null;
+    
     const response = {
       _id: user._id,
       name: user.name,
@@ -18,16 +22,18 @@ const loginController = handler(async (req, res) => {
       token: generateToken(user._id),
       
     };
+    console.log("login successful credentials:"+response)
     res.json(response);
   } else {
     res.status(401);
-    throw new Error("invalid username and password");
+    throw new Error("invalid username and password and yash is here");
   }
 });
 
 //registration controller///
 const registerController = handler(async (req, res) => {
   try {
+    console.log("Hi from Register Control")
     const { name, email, password } = req.body;
     const image = req.file;
 
@@ -35,7 +41,7 @@ const registerController = handler(async (req, res) => {
       res.status(400).json({ error: "Blank fields" });
       return;
     }
-
+    console.log("Reached registration endpoint");
     // Check if the email already exists
     const emailExist = await userModel.findOne({ email });
     if (emailExist) {
@@ -52,6 +58,7 @@ const registerController = handler(async (req, res) => {
 
     // Create entry in the database
     let user;
+    console.log("about to create the model")
     if (image) {
       user = await userModel.create({
         name,
@@ -73,6 +80,7 @@ const registerController = handler(async (req, res) => {
   } catch (error) {
     console.error("Registration failed:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
+    console.log("error:", error.message);
   }
 });
 
